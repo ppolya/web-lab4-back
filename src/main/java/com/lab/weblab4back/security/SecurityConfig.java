@@ -53,15 +53,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //MyAuthenticationFilter authenticationFilter = new MyAuthenticationFilter(authenticationManagerBean());
         //MyAuthorizationFilter authorizationFilter = new MyAuthorizationFilter();
         //authenticationFilter.setFilterProcessesUrl("/api/login");
-        http.cors().disable();
-        http.csrf().disable();
+        http.cors().and().csrf().disable();
         http.exceptionHandling().authenticationEntryPoint(authEntryPoint);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/signup").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().anyRequest().authenticated();
-        //http.addFilter(authenticationFilter);
+        http.authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 

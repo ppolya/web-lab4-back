@@ -5,7 +5,7 @@ import com.lab.weblab4back.model.Result;
 import com.lab.weblab4back.model.Role;
 import com.lab.weblab4back.model.User;
 import com.lab.weblab4back.security.jwt.JwtUtils;
-import com.lab.weblab4back.service.ModelsServiceImpl;
+import com.lab.weblab4back.service.UsersServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class MainController {
-    private final ModelsServiceImpl modelsService;
+    private final UsersServiceImpl modelsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
@@ -42,8 +42,7 @@ public class MainController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         log.info("User {} jwt token: {}", loginRequest.getUsername(), jwt);
-        org.springframework.security.core.userdetails.User userDetails =
-                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User userDetails = (User) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
@@ -73,29 +72,19 @@ public class MainController {
         return ResponseEntity.ok().body(modelsService.getAllUsers());
     }
 
-    @GetMapping("/admin/results")
-    public ResponseEntity<List<Result>> getAllResults() {
-        return ResponseEntity.ok().body(modelsService.getAllResults());
-    }
-
-    @GetMapping("/user/results")
-    public ResponseEntity<List<Result>> getUserResults(@RequestBody User user) {
-        return ResponseEntity.ok().body(modelsService.getUserResults(user));
-    }
-
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
         return ResponseEntity.ok().body(modelsService.saveRole(role));
     }
 
-    @PostMapping("/user/addRes")
-    public ResponseEntity<Result> addResult(@RequestBody String username, @RequestBody ResDTO res) {
-        User user = modelsService.getUser(username);
-        Result result = new Result(res.getX(), res.getY(), res.getY(), user);
-        modelsService.addResultToUser(username, result);
-        return ResponseEntity.ok().build();
-    }
-
+//    @PostMapping("/user/addRes")
+//    public ResponseEntity<Result> addResult(@RequestBody String username, @RequestBody ResDTO res) {
+//        User user = modelsService.getUser(username);
+//        Result result = new Result(res.getX(), res.getY(), res.getY());
+//        result.setUser(user);
+//        modelsService.addResultToUser(username, result);
+//        return ResponseEntity.ok().build();
+//    }
 
 //    @PostMapping("/admin/addRole")
 //    public ResponseEntity<?> addRoleToUser(@RequestBody UserDTO userDTO) {

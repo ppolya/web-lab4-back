@@ -1,5 +1,6 @@
 package com.lab.weblab4back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,9 +8,12 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,21 +22,24 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", nullable = false)
     private Long id;
     @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     @ToString.Exclude
+    @JsonIgnore
     private List<Result> resultList = new ArrayList<>();
 
     public User(Long id, String username, String password, List<Result> resultList, List<Role> roles) {
@@ -62,4 +69,28 @@ public class User {
     }
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

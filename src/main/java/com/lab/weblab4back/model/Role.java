@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "role_id", nullable = false)
@@ -38,5 +39,10 @@ public class Role {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String getAuthority() {
+        return role;
     }
 }

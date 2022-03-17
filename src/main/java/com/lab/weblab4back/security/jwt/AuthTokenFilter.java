@@ -1,6 +1,6 @@
 package com.lab.weblab4back.security.jwt;
 
-import com.lab.weblab4back.service.ModelsServiceImpl;
+import com.lab.weblab4back.service.UsersServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +23,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private ModelsServiceImpl userDetailsService;
+    private UsersServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

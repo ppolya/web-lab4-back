@@ -1,7 +1,7 @@
 package com.lab.weblab4back;
 
 import com.lab.weblab4back.model.Role;
-import com.lab.weblab4back.service.ModelsService;
+import com.lab.weblab4back.service.UsersService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +16,7 @@ public class WebLab4BackApplication {
     }
 
     @Bean
-    CommandLineRunner run(ModelsService userService) {
+    CommandLineRunner run(UsersService userService) {
         return(args -> {
             userService.saveRole(new Role(null, "ROLE_USER"));
             userService.saveRole(new Role(null, "ROLE_MANAGER"));

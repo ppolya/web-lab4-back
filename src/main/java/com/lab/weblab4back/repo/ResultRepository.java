@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ResultRepository extends PagingAndSortingRepository<Result, Long> {
-    List<Result> findAllByUser(User user);
+    List<Result> findByUser(User user);
+    void deleteResultsByUser(User user);
 }

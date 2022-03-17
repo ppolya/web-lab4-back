@@ -1,5 +1,6 @@
 package com.lab.weblab4back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,16 +22,18 @@ public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
+    @JsonIgnore
     private Long id;
     private double x_value;
     private double y_value;
     private double r_value;
-    private String status;
+    private boolean status;
     private String time;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @ToString.Exclude
     @JoinColumn(name="user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     public Result(double x_value, double y_value, double r_value, User user) {
@@ -39,12 +42,7 @@ public class Result {
         this.r_value = r_value;
         this.user = user;
         this.time = generateTime();
-        this.status = generateStatus();
-    }
-
-    public String generateStatus() {
-        status = checkQuarters() ? "точка попала" : "точка не попала";
-        return status;
+        this.status = checkQuarters();
     }
 
     public String generateTime() {
